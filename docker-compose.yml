@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  consul1:
+    image: consul:latest
+    container_name: consul1
+    command: agent -server -client=0.0.0.0 -bootstrap-expect=3 -node=consul1
+    networks:
+      - consul
+
+  consul2:
+    image: consul:latest
+    container_name: consul2
+    command: agent -server -client=0.0.0.0 -retry-join=consul1 -node=consul2
+    networks:
+      - consul
+
+  consul3:
+    image: consul:latest
+    container_name: consul3
+    command: agent -server -client=0.0.0.0 -retry-join=consul1 -node=consul3
+    networks:
+      - consul
+
+  consul4:
+    image: consul:latest
+    container_name: consul4
+    ports:
+      - 8500:8500
+    command: agent -client=0.0.0.0 -retry-join=consul1 -ui -node=client1
+    networks:
+      - consul
+
+networks:
+  consul:
+    driver: bridge
